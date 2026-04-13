@@ -1,8 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "xgFQ1M3dWbY=",
+  "dgSpecHash": "uj9jLa6JO5w=",
   "success": true,
   "projectFilePath": "/home/xd/Neumont/Q7/CSC360/Final.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "/home/xd/.nuget/packages/atksharp/3.24.24.133-develop/atksharp.3.24.24.133-develop.nupkg.sha512",
+    "/home/xd/.nuget/packages/cairosharp/3.24.24.133-develop/cairosharp.3.24.24.133-develop.nupkg.sha512",
+    "/home/xd/.nuget/packages/gdksharp/3.24.24.133-develop/gdksharp.3.24.24.133-develop.nupkg.sha512",
+    "/home/xd/.nuget/packages/giosharp/3.24.24.133-develop/giosharp.3.24.24.133-develop.nupkg.sha512",
+    "/home/xd/.nuget/packages/glibsharp/3.24.24.133-develop/glibsharp.3.24.24.133-develop.nupkg.sha512",
+    "/home/xd/.nuget/packages/gtksharp/3.24.24.133-develop/gtksharp.3.24.24.133-develop.nupkg.sha512",
+    "/home/xd/.nuget/packages/pangosharp/3.24.24.133-develop/pangosharp.3.24.24.133-develop.nupkg.sha512"
+  ],
   "logs": []
 }
