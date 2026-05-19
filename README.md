@@ -62,3 +62,40 @@ service.SetStorage(new InMemoryStorage());
 
 `NoteService` never needs to change when a new storage backend is added — only a new class
 implementing `IStorageStrategy` is required.
+
+## Design Pattern: Observer
+
+This project also uses the **Observer pattern** to decouple the service layer from the UI/controller layer.
+
+### Problem It Solves
+
+`NoteService` mutates notes, but the controller layer needs to react to those changes without
+`NoteService` having any direct knowledge of the UI. Without Observer, the controller would have
+to poll for changes or the service would need a hard reference to the view — coupling layers
+that should stay separate.
+
+### How It Works
+
+```
+INoteObserver             (interface — defines OnNotesChanged contract)
+└── NoteController        (concrete observer — simulates a UI refresh on notification)
+
+NoteService               (subject — holds List<INoteObserver>, calls Notify() after each mutation)
+```
+
+- **`INoteObserver`** declares `OnNotesChanged()` — the only method observers must implement.
+- **`NoteController`** registers itself with `NoteService` on construction and prints the
+  current note list whenever `OnNotesChanged()` is called, simulating a GTK view refresh.
+- **`NoteService`** maintains a `List<INoteObserver>` and calls `Notify()` at the end of
+  `CreateNote`, `UpdateNote`, and `DeleteNote`.
+
+### Registering and Unregistering
+
+```csharp
+var controller = new NoteController(noteService); // auto-registers via Subscribe(this)
+noteService.Unsubscribe(controller);              // deregister when no longer needed
+```
+
+`NoteService` never needs to know which concrete observer type it is notifying — it only
+knows about `INoteObserver`. Adding a second observer (e.g. a logger) requires no changes
+to `NoteService` or `NoteController`.
