@@ -99,3 +99,34 @@ noteService.Unsubscribe(controller);              // deregister when no longer n
 `NoteService` never needs to know which concrete observer type it is notifying — it only
 knows about `INoteObserver`. Adding a second observer (e.g. a logger) requires no changes
 to `NoteService` or `NoteController`.
+
+## Design Pattern: Singleton
+
+This project uses the **Singleton pattern** to ensure only one `NoteService` instance exists for the lifetime of the application.
+
+### Problem It Solves
+
+`NoteService` manages all note data and observer subscriptions. If multiple instances could be created, different parts of the app could end up with out-of-sync state — one instance holding a list of observers that another doesn't know about, or two instances writing to the same file concurrently. The Singleton guarantees a single, shared source of truth.
+
+### How It Works
+
+```
+NoteService
+├── private static NoteService? _instance   (static instance — stored at the class level)
+├── private NoteService(IStorageStrategy)   (private constructor — blocks external new)
+└── public static GetInstance(storage)      (public access point — creates or returns _instance)
+```
+
+- **Private constructor** — `new NoteService(...)` cannot be called from outside the class.
+- **Static instance** — `_instance` holds the single object; `null` until first access.
+- **`GetInstance()`** — checks `_instance`; creates it on first call, returns it on all subsequent calls. Uses double-checked locking so it is safe across threads.
+
+### Proving the Singleton
+
+```csharp
+var a = NoteService.GetInstance(new JsonFileStorage("notes.json"));
+var b = NoteService.GetInstance(new InMemoryStorage()); // different arg — ignored
+Console.WriteLine(ReferenceEquals(a, b)); // True — same object
+```
+
+The second call's argument is discarded because the instance already exists. This is visible in the program output: `Same instance? True`.
